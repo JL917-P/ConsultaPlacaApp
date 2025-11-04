@@ -26,7 +26,7 @@ jobs:
           pip install --upgrade pip
           pip install buildozer cython
 
-      - name: Install Android SDK manually
+      - name: Install Android SDK (modern structure)
         shell: bash
         run: |
           echo "=== Instalando Android SDK ==="
@@ -35,34 +35,36 @@ jobs:
           wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O tools.zip
           unzip tools.zip
           mv cmdline-tools latest
+
           export ANDROID_HOME=$HOME/android-sdk
           export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
-          yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses || true
+
+          yes | sdkmanager --licenses || true
           sdkmanager --sdk_root=$ANDROID_HOME "platform-tools" "platforms;android-33" "build-tools;33.0.2" || true
 
-      - name: Fix SDK paths for Buildozer
+      - name: Fix Buildozer SDK paths
         shell: bash
         run: |
-          echo "=== Corrigiendo rutas de SDK para Buildozer ==="
+          echo "=== Corrigiendo rutas antiguas para Buildozer ==="
           export ANDROID_HOME=$HOME/android-sdk
           mkdir -p $HOME/.buildozer/android/platform/android-sdk/tools/bin
-          mkdir -p $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/
+          mkdir -p $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2
           mkdir -p $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin
 
-          # Crear enlaces simbólicos hacia los binarios
+          # Enlazar los binarios reales
           ln -sf $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager $HOME/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager
           ln -sf $ANDROID_HOME/build-tools/33.0.2/aidl $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/aidl
           ln -sf $ANDROID_HOME/build-tools/33.0.2/lib $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/lib
 
           echo "=== Verificación de binarios ==="
-          ls -la $HOME/.buildozer/android/platform/android-sdk/tools/bin/
           which sdkmanager || echo "sdkmanager no encontrado"
           sdkmanager --version || true
+          ls -la $HOME/.buildozer/android/platform/android-sdk/tools/bin/
 
       - name: Build APK
         shell: bash
         run: |
-          echo "=== Configurando entorno ==="
+          echo "=== Iniciando compilación con Buildozer ==="
           export ANDROID_HOME=$HOME/android-sdk
           export ANDROID_SDK_ROOT=$ANDROID_HOME
           export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/33.0.2:$PATH
