@@ -19,10 +19,14 @@
     <button id="buscarBtn">🔍 Consultar</button>
 
     <div class="buttons">
-      <button id="captureBtn">📸 Capturar</button>
-      <button id="closeBtn" class="cancel">❌ Cerrar</button>
+      <button id="openCameraBtn">📷 Abrir cámara</button>
+      <button id="captureBtn" disabled>📸 Capturar</button>
+      <button id="closeBtn" class="cancel" disabled>❌ Cerrar</button>
     </div>
+
+      <!-- Cámara -->
     <video id="video" autoplay playsinline hidden></video>
+
 
     <section id="resultado" class="card" hidden>
       <h2>DATOS DEL VEHÍCULO</h2>
