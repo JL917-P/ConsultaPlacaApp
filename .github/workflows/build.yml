@@ -48,20 +48,21 @@ jobs:
           export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/33.0.2:$PATH
 
           echo "=== Vinculando SDK externo con Buildozer ==="
-          mkdir -p $HOME/.buildozer/android/platform/android-sdk
-          ln -sf $ANDROID_HOME $HOME/.buildozer/android/platform/android-sdk
+          mkdir -p $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/
+          ln -sf $ANDROID_HOME/build-tools/33.0.2/aidl $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/aidl
+          ln -sf $ANDROID_HOME/build-tools/33.0.2/lib $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/lib
 
-          # === Crear ruta esperada por versiones antiguas de Buildozer ===
+          # === Crear compatibilidad con versiones antiguas ===
           mkdir -p $HOME/.buildozer/android/platform/android-sdk/tools/bin
           ln -sf $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager $HOME/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager
 
-          echo "=== Verificando sdkmanager ==="
+          echo "=== Verificando AIDL y SDKMANAGER ==="
+          which aidl || echo "aidl no encontrado"
           which sdkmanager || echo "sdkmanager no encontrado"
           sdkmanager --version || true
 
-          echo "=== Iniciando Buildozer ==="
+          echo "=== Iniciando compilación con Buildozer ==="
           buildozer android debug
-
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
