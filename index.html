@@ -16,30 +16,30 @@
 
   <main>
     <p>Escribe una placa o usa la cámara trasera para capturarla:</p>
-    <input type="text" id="placaInput" placeholder="Ejemplo: W4U807">
-    <button id="buscarBtn">🔍 Consultar</button>
 
+    <!-- Campo de texto para ingresar la placa -->
+    <input type="text" id="placaInput" placeholder="Ejemplo: W4U807">
+
+    <!-- Botones de acción -->
+    <button id="buscarBtn">🔍 Consultar</button>
     <div class="buttons">
       <button id="captureBtn">📸 Capturar</button>
       <button id="closeBtn" class="cancel">❌ Cerrar</button>
     </div>
 
-    <!-- Resultado de consulta -->
+    <!-- Resultado dentro de la app -->
     <section id="resultado" class="card" hidden>
       <h2>DATOS DEL VEHÍCULO</h2>
       <div id="vehiculoDatos"></div>
     </section>
 
-    <!-- 🔹 Portal SUNARP embebido -->
+    <!-- 🔹 Botón para abrir el portal SUNARP -->
     <section id="consultaExterna" class="card">
       <h2>Consulta Vehicular SUNARP</h2>
-      <iframe 
-        src="https://vehicular.sunarp.gob.pe/" 
-        title="Consulta Vehicular SUNARP"
-        width="100%" 
-        height="620px" 
-        style="border:2px solid #004aad; border-radius:10px;">
-      </iframe>
+      <p>Puedes abrir el portal oficial de SUNARP para consultar la placa con su código CAPTCHA.</p>
+      <button class="sunarpBtn" onclick="window.open('https://www.sunarp.gob.pe/ConsultaVehicular', '_blank')">
+        🌐 Abrir portal oficial SUNARP
+      </button>
     </section>
   </main>
 
