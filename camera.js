@@ -1,20 +1,31 @@
-const video = document.getElementById('video');
-const captureBtn = document.getElementById('captureBtn');
-const closeBtn = document.getElementById('closeBtn');
-let stream;
+const video = document.getElementById("video");
+const captureBtn = document.getElementById("captureBtn");
+const closeBtn = document.getElementById("closeBtn");
+let stream = null;
 
-// Abrir cámara cuando el usuario lo decida
-async function openCamera() {
+// Abrir cámara trasera
+captureBtn.addEventListener("click", async () => {
   try {
     stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment' } // cámara trasera
+      video: { facingMode: "environment" }
     });
     video.srcObject = stream;
-    video.play();
+    video.hidden = false;
+    await video.play();
   } catch (err) {
     alert("No se pudo acceder a la cámara: " + err.message);
   }
-}
+});
+
+// Cerrar cámara
+closeBtn.addEventListener("click", () => {
+  if (stream) {
+    stream.getTracks().forEach(track => track.stop());
+    stream = null;
+  }
+  video.srcObject = null;
+  video.hidden = true;
+});
 
 // Capturar imagen
 captureBtn.addEventListener('click', () => {
