@@ -1,42 +1,32 @@
-  - name: Build APK
-    shell: bash
-    env:
-          ANDROID_HOME: ${{ github.workspace }}/android-sdk
-    run: |
-          # === Variables del SDK ===
-          export ANDROID_HOME=$HOME/android-sdk
-          export ANDROID_SDK_ROOT=$ANDROID_HOME
-          export ANDROIDSDK=$ANDROID_HOME
-          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/33.0.2:$PATH
+name: Buildozer APK
 
-          echo "=== Vinculando SDK externo a ruta esperada por Buildozer ==="
-          mkdir -p $HOME/.buildozer/android/platform/
-          ln -sf $ANDROID_HOME $HOME/.buildozer/android/platform/android-sdk
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
 
-          echo "=== Compatibilidad con estructura antigua (tools/bin) ==="
-          mkdir -p $HOME/.buildozer/android/platform/android-sdk/tools/bin
-          ln -sf $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager $HOME/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-          echo "=== Verificando sdkmanager y aidl ==="
-          which sdkmanager || echo "sdkmanager no encontrado"
-          which aidl || echo "aidl no encontrado"
-          sdkmanager --version || true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-          echo "=== Aceptando licencias del SDK ==="
-          yes | sdkmanager --licenses --sdk_root=$ANDROID_HOME || true
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
 
-          echo "=== Instalando herramientas requeridas ==="
-          sdkmanager --sdk_root=$ANDROID_HOME "platform-tools" "platforms;android-33" "build-tools;33.0.2" || true
+      - name: Install dependencies
+        shell: bash
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y git zip unzip wget openjdk-17-jdk python3-dev libffi-dev libssl-dev
+          pip install --upgrade pip
+          pip install buildozer cython
 
-          echo "=== Forzando Build Tools visibles a Buildozer ==="
-          mkdir -p $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/
-          ln -sf $ANDROID_HOME/build-tools/33.0.2/aidl $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/aidl
-          ln -sf $ANDROID_HOME/build-tools/33.0.2/lib $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/lib
-
-          echo "=== Iniciando compilación ==="
-          buildozer android debug
-
-      - name: Install Android SDK manually
+      - name: Install Android SDK and accept licenses
         shell: bash
         run: |
           mkdir -p $HOME/android-sdk/cmdline-tools
@@ -54,25 +44,30 @@
         env:
           ANDROID_HOME: ${{ github.workspace }}/android-sdk
         run: |
-          # === Configurar rutas del SDK externo ===
+          echo "=== CONFIGURANDO ENTORNO ANDROID ==="
           export ANDROID_HOME=$HOME/android-sdk
+          export ANDROID_SDK_ROOT=$ANDROID_HOME
+          export ANDROIDSDK=$ANDROID_HOME
           export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/33.0.2:$PATH
 
-          echo "=== Vinculando SDK externo con Buildozer ==="
+          echo "=== CREANDO RUTAS ESPERADAS POR BUILDOZER ==="
+          mkdir -p $HOME/.buildozer/android/platform/android-sdk/tools/bin
           mkdir -p $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/
+
+          echo "=== ENLAZANDO BINARIOS ==="
+          ln -sf $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager $HOME/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager
           ln -sf $ANDROID_HOME/build-tools/33.0.2/aidl $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/aidl
           ln -sf $ANDROID_HOME/build-tools/33.0.2/lib $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/lib
 
-          # === Crear compatibilidad con versiones antiguas ===
-          mkdir -p $HOME/.buildozer/android/platform/android-sdk/tools/bin
-          ln -sf $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager $HOME/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager
-
-          echo "=== Verificando AIDL y SDKMANAGER ==="
-          which aidl || echo "aidl no encontrado"
+          echo "=== VERIFICANDO INSTALACIONES ==="
           which sdkmanager || echo "sdkmanager no encontrado"
+          which aidl || echo "aidl no encontrado"
           sdkmanager --version || true
 
-          echo "=== Iniciando compilación con Buildozer ==="
+          echo "=== ACEPTANDO LICENCIAS DEL SDK ==="
+          yes | sdkmanager --licenses --sdk_root=$ANDROID_HOME || true
+
+          echo "=== INICIANDO COMPILACIÓN DE BUILDOZER ==="
           buildozer android debug
 
       - name: Upload APK
