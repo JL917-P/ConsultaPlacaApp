@@ -24,7 +24,7 @@ jobs:
           pip install --upgrade pip
           pip install buildozer cython
 
-      - name: Install Android SDK (with AIDL fix)
+      - name: Install Android SDK manually
         run: |
           mkdir -p $HOME/android-sdk/cmdline-tools
           cd $HOME/android-sdk/cmdline-tools
@@ -32,18 +32,23 @@ jobs:
           unzip tools.zip
           mv cmdline-tools latest
           export ANDROID_HOME=$HOME/android-sdk
-          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/33.0.2:$PATH
+          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
           yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses
-          sdkmanager --sdk_root=$ANDROID_HOME "platform-tools" "platforms;android-33" "build-tools;33.0.2" "cmdline-tools;latest"
+          sdkmanager --sdk_root=$ANDROID_HOME "platform-tools" "platforms;android-33" "build-tools;33.0.2"
 
-          # ✅ AIDL FIX - crear enlace simbólico para que Buildozer lo encuentre
-          mkdir -p $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/
-          ln -sf $ANDROID_HOME/build-tools/33.0.2/aidl $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/aidl
-
-      - name: Build APK
+      - name: Build APK (force external SDK path)
+        env:
+          ANDROIDSDK: ${{ github.workspace }}/android-sdk
+          ANDROIDNDKVER: "23.1.7779620"
+          ANDROID_HOME: ${{ github.workspace }}/android-sdk
+          PATH: ${{ github.workspace }}/android-sdk/platform-tools:${{ github.workspace }}/android-sdk/build-tools/33.0.2:${{ github.workspace }}/android-sdk/cmdline-tools/latest/bin:$PATH
         run: |
+          export ANDROIDSDK=$HOME/android-sdk
           export ANDROID_HOME=$HOME/android-sdk
           export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/33.0.2:$PATH
+          echo "ANDROIDSDK path: $ANDROIDSDK"
+          echo "Checking sdkmanager..."
+          which sdkmanager || echo "sdkmanager not found!"
           buildozer android debug
 
       - name: Upload APK
