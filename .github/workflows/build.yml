@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y zip unzip openjdk-17-jdk wget
+          sudo apt install -y zip unzip openjdk-17-jdk wget git
           pip install --upgrade pip
           pip install buildozer cython
 
