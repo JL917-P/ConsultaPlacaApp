@@ -41,8 +41,6 @@ jobs:
 
       - name: Build APK
         shell: bash
-        env:
-          ANDROID_HOME: ${{ github.workspace }}/android-sdk
         run: |
           echo "=== CONFIGURANDO ENTORNO ANDROID ==="
           export ANDROID_HOME=$HOME/android-sdk
@@ -50,24 +48,25 @@ jobs:
           export ANDROIDSDK=$ANDROID_HOME
           export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/33.0.2:$PATH
 
-          echo "=== CREANDO RUTAS ESPERADAS POR BUILDOZER ==="
+          echo "=== CREANDO ESTRUCTURA ESPERADA POR BUILDOZER ==="
           mkdir -p $HOME/.buildozer/android/platform/android-sdk/tools/bin
           mkdir -p $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/
+          mkdir -p $HOME/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin
 
           echo "=== ENLAZANDO BINARIOS ==="
           ln -sf $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager $HOME/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager
           ln -sf $ANDROID_HOME/build-tools/33.0.2/aidl $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/aidl
           ln -sf $ANDROID_HOME/build-tools/33.0.2/lib $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/lib
 
-          echo "=== VERIFICANDO INSTALACIONES ==="
+          echo "=== VERIFICANDO SDKMANAGER Y AIDL ==="
           which sdkmanager || echo "sdkmanager no encontrado"
           which aidl || echo "aidl no encontrado"
           sdkmanager --version || true
 
-          echo "=== ACEPTANDO LICENCIAS DEL SDK ==="
+          echo "=== ACEPTANDO LICENCIAS ==="
           yes | sdkmanager --licenses --sdk_root=$ANDROID_HOME || true
 
-          echo "=== INICIANDO COMPILACIÓN DE BUILDOZER ==="
+          echo "=== INICIANDO COMPILACIÓN ==="
           buildozer android debug
 
       - name: Upload APK
