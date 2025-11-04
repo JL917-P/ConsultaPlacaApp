@@ -4,23 +4,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Consulta Placa Vehicular</title>
-  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
   <script defer src="camera.js"></script>
-  <script defer src="ocr.js"></script>
+  <script defer src="main.js"></script>
 </head>
 <body>
-  <header><h1>Consulta Placa Vehicular</h1></header>
+  <header>
+    <h1>Consulta Placa Vehicular</h1>
+  </header>
+
   <main>
-    <p>Toma una foto de la placa o escribe el número:</p>
-    <input type="text" id="placa" placeholder="ABC123">
-    <button onclick="buscarPlaca()">Consultar</button>
+    <p>Escribe una placa o usa la cámara trasera para capturarla:</p>
+    <input type="text" id="placaInput" placeholder="Ejemplo: W4U807">
+    <button id="buscarBtn">🔍 Consultar</button>
+
     <div class="camera-container">
-      <video id="camera" autoplay playsinline></video>
-      <button id="capture-btn">📸 Capturar</button>
+      <video id="camera" autoplay playsinline hidden></video><br>
+      <button id="open-camera">📷 Activar cámara</button>
+      <button id="capture-btn" hidden>📸 Capturar</button>
     </div>
-    <div id="resultado"></div>
+
+    <section id="resultado" class="card" hidden>
+      <h2>DATOS DEL VEHÍCULO</h2>
+      <div id="vehiculoDatos"></div>
+    </section>
   </main>
+
   <footer>© 2025 ConsultaPlacaApp</footer>
 </body>
 </html>
