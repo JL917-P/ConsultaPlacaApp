@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Consulta Placa Vehicular</title>
   <link rel="stylesheet" href="style.css">
@@ -19,22 +20,24 @@
     <button id="buscarBtn">🔍 Consultar</button>
 
     <div class="buttons">
-      <button id="openCameraBtn">📷 Abrir cámara</button>
-      <button id="captureBtn" disabled>📸 Capturar</button>
-      <button id="closeBtn" class="cancel" disabled>❌ Cerrar</button>
+      <button id="captureBtn">📸 Capturar</button>
+      <button id="closeBtn" class="cancel">❌ Cerrar</button>
     </div>
 
-      <!-- Cámara -->
-    <video id="video" autoplay playsinline hidden></video>
+    <!-- Resultado de consulta -->
+    <section id="resultado" class="card" hidden>
+      <h2>DATOS DEL VEHÍCULO</h2>
+      <div id="vehiculoDatos"></div>
+    </section>
 
-
-  <section id="consultaExterna" class="card">
-     <h2>Consulta Vehicular SUNARP</h2>
-     <iframe 
+    <!-- 🔹 Portal SUNARP embebido -->
+    <section id="consultaExterna" class="card">
+      <h2>Consulta Vehicular SUNARP</h2>
+      <iframe 
         src="https://vehicular.sunarp.gob.pe/" 
         title="Consulta Vehicular SUNARP"
         width="100%" 
-        height="600px" 
+        height="620px" 
         style="border:2px solid #004aad; border-radius:10px;">
       </iframe>
     </section>
