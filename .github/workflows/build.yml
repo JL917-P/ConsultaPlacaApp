@@ -49,10 +49,18 @@ jobs:
         run: |
           export ANDROID_HOME=$HOME/android-sdk
           export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/33.0.2:$PATH
-          echo "=== Checking Git installation ==="
-          git --version || (echo "Git is still missing" && exit 1)
-          echo "=== Starting Buildozer ==="
+
+          echo "=== Fixing AIDL location ==="
+          mkdir -p $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/
+          ln -sf $ANDROID_HOME/build-tools/33.0.2/aidl $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/aidl
+          ln -sf $ANDROID_HOME/build-tools/33.0.2/lib $HOME/.buildozer/android/platform/android-sdk/build-tools/33.0.2/lib
+
+          echo "=== Checking AIDL availability ==="
+          which aidl || echo "aidl not in PATH!"
+
+          echo "=== Starting Buildozer build ==="
           buildozer android debug
+
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
