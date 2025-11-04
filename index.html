@@ -16,33 +16,70 @@
 
   <main>
     <p>Escribe una placa o usa la cámara trasera para capturarla:</p>
-
-    <!-- Campo de texto para ingresar la placa -->
     <input type="text" id="placaInput" placeholder="Ejemplo: W4U807">
 
-    <!-- Botones de acción -->
     <button id="buscarBtn">🔍 Consultar</button>
+
     <div class="buttons">
       <button id="captureBtn">📸 Capturar</button>
       <button id="closeBtn" class="cancel">❌ Cerrar</button>
     </div>
 
-    <!-- Resultado dentro de la app -->
     <section id="resultado" class="card" hidden>
       <h2>DATOS DEL VEHÍCULO</h2>
       <div id="vehiculoDatos"></div>
     </section>
 
-    <!-- 🔹 Botón para abrir el portal SUNARP -->
+    <!-- 🔹 Botón que abre el modal de SUNARP -->
     <section id="consultaExterna" class="card">
       <h2>Consulta Vehicular SUNARP</h2>
-      <p>Puedes abrir el portal oficial de SUNARP para consultar la placa con su código CAPTCHA.</p>
-      <button class="sunarpBtn" onclick="window.open('https://www.sunarp.gob.pe/ConsultaVehicular', '_blank')">
-        🌐 Abrir portal oficial SUNARP
-      </button>
+      <p>Puedes abrir el portal oficial dentro de tu app.</p>
+      <button class="sunarpBtn" id="openSunarpBtn">🌐 Abrir portal SUNARP</button>
     </section>
   </main>
 
+  <!-- 🔸 Modal flotante -->
+  <div id="sunarpModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Consulta Vehicular - SUNARP</h3>
+        <span class="closeModal" id="closeModalBtn">&times;</span>
+      </div>
+
+      <iframe 
+        id="sunarpIframe"
+        src="https://www.sunarp.gob.pe/ConsultaVehicular"
+        title="Consulta Vehicular SUNARP"
+        loading="lazy">
+      </iframe>
+    </div>
+  </div>
+
   <footer>© 2025 ConsultaPlacaApp</footer>
+
+  <script>
+    // --- Control del modal ---
+    const modal = document.getElementById('sunarpModal');
+    const openBtn = document.getElementById('openSunarpBtn');
+    const closeBtn = document.getElementById('closeModalBtn');
+
+    openBtn.onclick = () => {
+      modal.style.display = 'flex';
+      document.getElementById('sunarpIframe').src = "https://www.sunarp.gob.pe/ConsultaVehicular";
+    };
+
+    closeBtn.onclick = () => {
+      modal.style.display = 'none';
+      document.getElementById('sunarpIframe').src = ""; // Detiene carga
+    };
+
+    // Cierra el modal tocando fuera del contenido
+    window.onclick = (e) => {
+      if (e.target === modal) {
+        modal.style.display = 'none';
+        document.getElementById('sunarpIframe').src = "";
+      }
+    };
+  </script>
 </body>
 </html>
