@@ -69,3 +69,14 @@ video {
   margin: 3px 0;
   font-size: 15px;
 }
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+button.cancel {
+  background-color: #e63946;
+  color: white;
+}
