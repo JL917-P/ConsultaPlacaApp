@@ -38,4 +38,27 @@ closeBtn.addEventListener('click', () => {
 });
 
 // Llamar a la función cuando el usuario quiera abrir la cámara
-document.addEventListener('DOMContentLoaded', openCamera);
+document.getElementById("captureBtn").addEventListener("click", async () => {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: "environment" } // cámara trasera
+    });
+
+    const video = document.createElement("video");
+    video.srcObject = stream;
+    video.autoplay = true;
+    video.playsInline = true;
+    video.style.width = "100%";
+    video.style.maxWidth = "400px";
+    document.body.appendChild(video);
+
+    // Cerrar cámara al presionar el botón "Cerrar"
+    const closeBtn = document.getElementById("closeBtn");
+    closeBtn.onclick = () => {
+      stream.getTracks().forEach(track => track.stop());
+      video.remove();
+    };
+  } catch (err) {
+    alert("No se pudo acceder a la cámara: " + err.message);
+  }
+});
